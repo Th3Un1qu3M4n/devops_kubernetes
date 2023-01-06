@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+  labels:
+    app: apache_webserver
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apache_webserver
+  template:
+    metadata:
+      labels:
+        app: apache_webserver
+    spec:
+      containers:
+        - name: apache-container
+          image: php:apache
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: hostwww
+            mountPath: /var/www/html
+          ports:
+            - containerPort: 80
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: myDB
+            - name: MYSQL_USER
+              value: user
+            - name: MYSQL_PASSWORD
+              value: password
+      volumes:
+      - name: hostwww
+        hostPath:
+          path: /data
